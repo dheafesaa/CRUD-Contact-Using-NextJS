@@ -1,0 +1,39 @@
+.headerku {
+  &_head {
+    display: flex;
+    // margin: 0.5rem 4rem;
+    font-weight: 900;
+    font-size: 20px;
+  }
+
+  &_sub {
+    display: flex;
+    // flex-direction: row;
+    // margin: 0.5rem 4rem;
+    max-width: 430px;
+    width: 40%;
+    letter-spacing: 1px;
+    // width: 400px;
+    justify-content: space-between;
+    // align-items: center;
+  }
+
+  &_login {
+    color: white;
+    background-color: #0f1114;
+    border: 1px #0f1114;
+    padding: 10px 30px;
+
+    &:hover {
+      background-color: #393e46;
+    }
+  }
+}
+
+@media (max-width: 640px) {
+  .headerku_sub {
+    flex-direction: column;
+    margin: -0.5rem 0;
+  }
+}
+

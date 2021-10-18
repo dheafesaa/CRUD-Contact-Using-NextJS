@@ -1,0 +1,33 @@
+.cover {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  padding-left: 2.5rem;
+  padding-right: 2.5rem;
+  margin-top: 1rem;
+  margin-bottom: 3rem;
+
+  &__content {
+    display: flex;
+    flex-direction: column;
+    max-width: 900px;
+  }
+
+  &__head {
+    display: flex;
+    font-size: 35px;
+  }
+
+  &__body {
+    font-size: 18px;
+    margin-top: -1rem;
+    text-align: justify;
+    letter-spacing: 1px;
+  }
+
+  &__pict {
+    display: flex;
+    padding-top: 2rem;
+  }
+}
