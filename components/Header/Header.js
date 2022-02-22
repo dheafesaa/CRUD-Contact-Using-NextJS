@@ -12,7 +12,6 @@ const Header = () => {
         <p>Download</p>
         <p>Premium</p>
         <p>About</p>
-        {/* <button className={styles.headerku_login}>Login</button> */}
       </div>
     </header>
   );

@@ -1,26 +1,24 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { actionType } from "../../store/actions";
 import styles from "../../styles/addContact.module.scss";
 
-const addContact = () => {
+const addContact = ({togglePopup, payload, index}) => {
   const dispatch = useDispatch();
 
-  const [contact, setContact] = useState("");
-  const [editing, setEditing] = useState("");
+  const [contact, setContact] = useState(() => {
+    if (payload) {
+      return {...payload.value}
+    }
+    return {
+      name: "",
+      phone: "",
+    }
+  });
+
+  const editing = !!payload
 
   const editContact = useSelector((state) => state.editsContact);
-  var statusEdit = useSelector((state) => state.statusEdit);
-  var indexEdit = useSelector((state) => state.indexEdit);
-
-  useEffect(() => {
-    if (statusEdit) {
-      setContact(editContact)
-      statusEdit = false
-      dispatch(actionType.setEditFalse())
-      setEditing(true)
-    }
-  }, [statusEdit, editContact]);
 
   const handleChange = (event) => {
     const { name, value } = event.target;
@@ -31,19 +29,20 @@ const addContact = () => {
     event.preventDefault();
     dispatch(
       editing
-        ? actionType.editContact(contact, indexEdit)
+        ? actionType.editContact(contact, index)
         : actionType.addContact(contact)
     );
     setContact("");
-    setEditing(false);
+    togglePopup();
 
     console.log(contact);
   };
 
   const handleClear = () => {
-    setEditing(false);
     setContact("");
   };
+
+  console.log(payload);
 
   return (
     <form onSubmit={handleSubmit}>

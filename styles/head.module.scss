@@ -1,21 +1,17 @@
 .headerku {
   &_head {
     display: flex;
-    // margin: 0.5rem 4rem;
     font-weight: 900;
     font-size: 20px;
   }
 
   &_sub {
     display: flex;
-    // flex-direction: row;
-    // margin: 0.5rem 4rem;
     max-width: 430px;
     width: 40%;
     letter-spacing: 1px;
-    // width: 400px;
+    font-size: 18px;
     justify-content: space-between;
-    // align-items: center;
   }
 
   &_login {

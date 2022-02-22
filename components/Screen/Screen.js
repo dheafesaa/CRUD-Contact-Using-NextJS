@@ -2,17 +2,9 @@ import React, { useState } from "react";
 import Image from "next/image";
 import iphone from "../../image/fold.png";
 import right from "../../image/right.png";
-// import Modal from "../Modal/Modal";
-// import AddContact from "../AddContact/AddContact";
 import styles from "../../styles/screen.module.scss";
 
 const Screen = () => {
-  // const [showModal, setShowModal] = useState(false);
-
-  // const togglePopup = () => {
-  //   setShowModal(!showModal);
-  // };
-
   return (
     <>
       <div className={styles.screens}>
@@ -29,17 +21,9 @@ const Screen = () => {
                 </p>
               </div>
               <button className={styles.screens__add}>
-               GET STARTED
-               <Image src={right} alt="Right" width={30} height={30} />
+                GET STARTED
+                <Image src={right} alt="Right" width={30} height={30} />
               </button>
-              {/* {showModal && (
-                <Modal title="Add Contact" close={togglePopup}>
-                  <button className={styles.modal__close} onClick={togglePopup}>
-                    X
-                  </button>
-                  <AddContact />
-                </Modal>
-              )} */}
             </div>
           </div>
 
@@ -56,10 +40,10 @@ const Screen = () => {
               </p>
               <div className={styles.screens__msg4}>
                 <p>
-                  Lorem ipsum dolor sit amet dapibus maximus, consectetur adipiscing elit. Fusce
-                  pretium purus eu tincidunt maximus. In aliquam, enim volutpat
-                  vulputate facilisis, risus augue fringilla elit, quis dapibus
-                  ex dolor vel risus.
+                  Lorem ipsum dolor sit amet dapibus maximus, consectetur
+                  adipiscing elit. Fusce pretium purus eu tincidunt maximus. In
+                  aliquam, enim volutpat vulputate facilisis, risus augue
+                  fringilla elit, quis dapibus ex dolor vel risus.
                 </p>
               </div>
             </div>

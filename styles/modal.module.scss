@@ -1,15 +1,4 @@
-.modal {
-  // display: flex;
-  // justify-content: center;
-  // align-items: center;
-  // position: absolute;
-  // z-index: 9;
-  // top: 0;
-  // right: 0;
-  // bottom: 0;
-  // left: 0;
-  // background-color: rgba(0, 0, 0, 0.7);
-  
+.modal { 
   display: flex;
   position: fixed;
   justify-content: center;
@@ -56,5 +45,6 @@
   &__title {
     font-size: 30px;
     font-weight: 700;
+    color: black;
   }
 }

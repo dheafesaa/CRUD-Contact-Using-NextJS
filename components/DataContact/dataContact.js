@@ -31,13 +31,13 @@ const DataContact = () => {
           </div>
         </div>
         <div className={styles.data__plus}>
-          <Image src={plus} alt="Plus" width={50} height={50}  onClick={togglePopup} />
+          <Image src={plus} alt="Plus" width={60} height={60}  onClick={togglePopup} />
           {showModal && (
             <Modal title="Add Contact" close={togglePopup}>
               <button className={styles.modal__close} onClick={togglePopup}>
                 X
               </button>
-              <AddContact />
+              <AddContact togglePopup={togglePopup} />
             </Modal>
           )}
         </div>
