@@ -1,85 +1,95 @@
-import React, { useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { actionType } from "../../store/actions";
+import React, { useState, useEffect } from "react";
+import { useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
+import {
+  addListContact,
+  getListContact,
+  updateListContact,
+} from "../../actions/contactAction";
 import styles from "../../styles/addContact.module.scss";
 
-const addContact = ({togglePopup, payload, index}) => {
+const addContact = () => {
+  const {
+    addListContactResult,
+    detailListContactResult,
+    updateListContactResult,
+  } = useSelector((state) => state.ContactReducer);
+
+  console.log(detailListContactResult);
+
+  const [nama, setNama] = useState("");
+  const [nohp, setNohp] = useState("");
+  const [id, setId] = useState("");
+
   const dispatch = useDispatch();
-
-  const [contact, setContact] = useState(() => {
-    if (payload) {
-      return {...payload.value}
-    }
-    return {
-      name: "",
-      phone: "",
-    }
-  });
-
-  const editing = !!payload
-
-  const editContact = useSelector((state) => state.editsContact);
-
-  const handleChange = (event) => {
-    const { name, value } = event.target;
-    setContact({ ...contact, [name]: value });
-  };
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    dispatch(
-      editing
-        ? actionType.editContact(contact, index)
-        : actionType.addContact(contact)
-    );
-    setContact("");
-    togglePopup();
 
-    console.log(contact);
+    if (id) {
+      //update
+      dispatch(updateListContact({ id: id, nama: nama, nohp: nohp }));
+    } else {
+      //add
+      dispatch(addListContact({ nama: nama, nohp: nohp }));
+    }
+    // dispatch(addListContact({ nama: nama, nohp: nohp }));
   };
 
-  const handleClear = () => {
-    setContact("");
-  };
+  useEffect(() => {
+    if (addListContactResult) {
+      dispatch(getListContact());
+      setNama("");
+      setNohp("");
+    }
+  }, [addListContactResult, dispatch]);
 
-  console.log(payload);
+  useEffect(() => {
+    if (detailListContactResult) {
+      dispatch(getListContact());
+      setNama(detailListContactResult.nama);
+      setNohp(detailListContactResult.nohp);
+      setId(detailListContactResult.id)
+    }
+  }, [detailListContactResult, dispatch]);
+
+  useEffect(() => {
+    if (updateListContactResult) {
+      dispatch(getListContact());
+      setNama("");
+      setNohp("");
+      setId("");
+    }
+  }, [updateListContactResult, dispatch]);
 
   return (
-    <form onSubmit={handleSubmit}>
+    <form onSubmit={(event) => handleSubmit(event)}>
       <div className={styles.form__input}>
         <input
           type="text"
-          name="name"
+          name="nama"
           placeholder="Name"
           className={styles.input}
-          value={contact.name || ''}
-          onChange={handleChange}
+          value={nama}
+          onChange={(event) => setNama(event.target.value)}
           required
         />
         <input
           type="number"
           min="0"
-          name="phone"
+          name="nohp"
           placeholder="Phone Number"
           className={styles.input}
-          value={contact.phone || ''}
-          onChange={handleChange}
+          value={nohp}
+          onChange={(event) => setNohp(event.target.value)}
           required
         />
-        {editing ? (
-          <div className={styles.form__editing}>
-            <button className={styles.form__editing_update}>Update</button>
-            <button className={styles.form__editing_cancel} onClick={handleClear}>Cancel</button>
-          </div>
-        ) : (
-          <button className={styles.form__submit} type="submit">
-            Save
-          </button>
-        )}
+        <button className={styles.form__submit} type="submit">
+          Save
+        </button>
       </div>
     </form>
   );
 };
-
 
 export default addContact;
