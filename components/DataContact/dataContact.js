@@ -1,34 +1,46 @@
 import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { deleteUser, getUserById, getUsers } from "../../store/users/actions";
 import Image from "next/image";
 import plus from "../../image/plus.png";
 import DataItem from "./DataItem/DataItem";
-import styles from "../../styles/dataContact.module.scss";
 import Modal from "../Modal/Modal";
-import { getListContact } from "../../actions/contactAction";
-import {AddContact} from "../index";
+import styles from "../../styles/dataContact.module.scss";
 
 const DataContact = () => {
-  const { getListContactResult, getListContactLoading, getListContactError, deleteListContactResult } =
-    useSelector((state) => state.ContactReducer);
-
   const dispatch = useDispatch();
+  const stateUsers = useSelector((state) => state.users);
+  const [showModal, setShowModal] = useState(false);
+  const [isUpdate, setIsUpdate] = useState(false);
+
+  const openModal = () => setShowModal(!showModal);
+
+  const handleCreate = () => {
+    openModal();
+    setIsUpdate(false);
+  };
+
+  const setUpdate = (data) => {
+    dispatch(getUserById(data));
+    openModal();
+    setIsUpdate(true);
+  };
+
+  const handleDelete = (data) => {
+    if (window.confirm("Anda yakin ingin menghapus kontak ini?")) {
+      dispatch(deleteUser(data)).then(() => {
+        dispatch(getUsers());
+      });
+    }
+  };
 
   useEffect(() => {
-    dispatch(getListContact());
+    dispatch(getUsers());
   }, [dispatch]);
 
-  useEffect(() => {
-    if (deleteListContactResult) {
-      dispatch(getListContact());
-    }
-  }, [deleteListContactResult, dispatch]);
-
-  const [showModal, setShowModal] = useState(false);
-
-  const togglePopup = () => {
-    setShowModal(!showModal);
-  };
+  if (stateUsers.loading) {
+    return <p>Loadinggggggggg</p>;
+  }
 
   return (
     <>
@@ -50,23 +62,25 @@ const DataContact = () => {
               alt="Plus"
               width={60}
               height={60}
-              onClick={togglePopup}
+              onClick={handleCreate}
             />
-            {showModal && (
-              <Modal title="Add Contact" close={togglePopup}>
-                <button className={styles.modal__close} onClick={togglePopup}>
-                  X
-                </button>
-                <AddContact togglePopup={togglePopup} />
-              </Modal>
-            )}
+            <Modal
+              showModal={showModal}
+              setShowModal={setShowModal}
+              isUpdate={isUpdate}
+              setIsUpdate={setIsUpdate}
+            />
           </div>
         </div>
-
         <div className={styles.data__body}>
-          {getListContactResult.length > 0 ? (
-            getListContactResult.map((contact) => (
-              <DataItem contact={contact} key={contact.id} />
+          {stateUsers?.users.length > 0 ? (
+            stateUsers?.users.map((item) => (
+              <DataItem
+                item={item}
+                key={item.id}
+                onEdit={() => setUpdate(item)}
+                onDelete={() => handleDelete(item.id)}
+              />
             ))
           ) : (
             <div className={styles.data__empty}>

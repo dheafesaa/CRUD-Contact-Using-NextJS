@@ -1,77 +1,95 @@
-import React, { useState, useEffect } from "react";
-import { useSelector } from "react-redux";
-import { useDispatch } from "react-redux";
-import {
-  addListContact,
-  getListContact,
-  updateListContact,
-} from "../../actions/contactAction";
+import React, { useState, useEffect, useRef, useCallback } from "react";
+import { useSelector, useDispatch } from "react-redux";
+import { createUser, getUsers, updateUser } from "../../store/users/actions";
 import styles from "../../styles/addContact.module.scss";
 
-const addContact = () => {
-  const {
-    addListContactResult,
-    detailListContactResult,
-    updateListContactResult,
-  } = useSelector((state) => state.ContactReducer);
-
-  console.log(detailListContactResult);
-
-  const [nama, setNama] = useState("");
-  const [nohp, setNohp] = useState("");
-  const [id, setId] = useState("");
-
+export default function AddContact({
+  showModal,
+  setShowModal,
+  isUpdate,
+  setIsUpdate,
+}) {
+  const refModal = useRef(null);
   const dispatch = useDispatch();
+  const [form, setForm] = useState({
+    name: "",
+    email: "",
+    phone: "",
+  });
 
-  const handleSubmit = (event) => {
-    event.preventDefault();
+  const { user } = useSelector((state) => state.users);
 
-    if (id) {
-      //update
-      dispatch(updateListContact({ id: id, nama: nama, nohp: nohp }));
-    } else {
-      //add
-      dispatch(addListContact({ nama: nama, nohp: nohp }));
-    }
-    // dispatch(addListContact({ nama: nama, nohp: nohp }));
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setForm({ ...form, [name]: value });
   };
 
-  useEffect(() => {
-    if (addListContactResult) {
-      dispatch(getListContact());
-      setNama("");
-      setNohp("");
+  const handleSubmit = (e) => {
+    e.preventDefault();
+
+    if (isUpdate) {
+      dispatch(updateUser(user.id, form)).then(() => {
+        dispatch(getUsers());
+      });
+      setIsUpdate((prev) => !prev);
+    } else {
+      dispatch(createUser(form)).then(() => {
+        dispatch(getUsers());
+      });
     }
-  }, [addListContactResult, dispatch]);
+
+    setShowModal((prev) => !prev);
+    setForm("");
+  };
+
+  const handleClose = (e) => {
+    if (refModal.current === e.target) {
+      setShowModal((prev) => !prev);
+      setIsUpdate((prev) => !prev);
+      setForm("");
+    }
+  };
+
+  const escapePress = useCallback(
+    (e) => {
+      if (e.key === "Escape" && showModal) {
+        setShowModal((prev) => !prev);
+        setIsUpdate((prev) => !prev);
+        setForm("");
+      }
+    },
+    [setShowModal, showModal, setIsUpdate]
+  );
 
   useEffect(() => {
-    if (detailListContactResult) {
-      dispatch(getListContact());
-      setNama(detailListContactResult.nama);
-      setNohp(detailListContactResult.nohp);
-      setId(detailListContactResult.id)
-    }
-  }, [detailListContactResult, dispatch]);
+    document.addEventListener("keydown", escapePress);
+
+    return () => document.removeEventListener("keydown", escapePress);
+  }, [escapePress]);
 
   useEffect(() => {
-    if (updateListContactResult) {
-      dispatch(getListContact());
-      setNama("");
-      setNohp("");
-      setId("");
+    if (isUpdate) {
+      setForm({
+        ...form,
+        name: user.name,
+        email: user.email,
+        phone: user.phone,
+      });
+    } else {
+      setForm("");
     }
-  }, [updateListContactResult, dispatch]);
+  }, [isUpdate]);
 
   return (
-    <form onSubmit={(event) => handleSubmit(event)}>
+    <form>
       <div className={styles.form__input}>
         <input
           type="text"
           name="nama"
           placeholder="Name"
           className={styles.input}
-          value={nama}
-          onChange={(event) => setNama(event.target.value)}
+          value={form.name || ""}
+          onChange={handleChange}
           required
         />
         <input
@@ -80,16 +98,18 @@ const addContact = () => {
           name="nohp"
           placeholder="Phone Number"
           className={styles.input}
-          value={nohp}
-          onChange={(event) => setNohp(event.target.value)}
+          value={form.phone || ""}
+          onChange={handleChange}
           required
         />
-        <button className={styles.form__submit} type="submit">
+        <button
+          type="submit"
+          className={styles.form__submit}
+          onClick={handleSubmit}
+        >
           Save
         </button>
       </div>
     </form>
   );
-};
-
-export default addContact;
+}
